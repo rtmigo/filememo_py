@@ -1,6 +1,6 @@
 # [filememo](https://github.com/rtmigo/filememo_py#readme)
 
-Permanently caches previous function results.
+Permanently caches function results.
 
 Based on [pickledir](https://github.com/rtmigo/pickledir_py#readme).
 
