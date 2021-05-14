@@ -21,12 +21,13 @@ setup(
     author_email="ortemeo@gmail.com",
     url='https://github.com/rtmigo/filememo_py#readme',
 
-    python_requires='>=3.8',  # needed for faster pickle protocol version 5
+    #python_requires='>=3.8',  # needed for faster pickle protocol version 5
     install_requires=['pickledir'],
     packages=[name],
 
-    description="File-based key-value storage for pickle-serializable "
-                "keys and values.",
+    description="File-based memoization decorator. Stores the results of "
+                "expensive function calls and returns the cached result "
+                "when the same inputs occur again.",
 
     keywords="memoize function method cache pickle file directory caching data".split(),
 
@@ -36,8 +37,9 @@ setup(
     license='MIT',
 
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: MIT License',
+        # python 3.8 is required by pickledir
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Operating System :: POSIX",
