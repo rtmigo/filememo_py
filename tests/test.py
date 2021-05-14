@@ -19,7 +19,7 @@ class TestDecorator(unittest.TestCase):
 
             functionCalls = 0
 
-            @memoize(dir_path=tempTestDir, max_age=timedelta(seconds=0.2))
+            @memoize(dir=tempTestDir, max_age=timedelta(seconds=0.2))
             def real_function(a: int, b: int) -> int:
                 nonlocal functionCalls
                 functionCalls += 1

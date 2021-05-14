@@ -11,7 +11,7 @@ from filememo import memoize
 
 @memoize
 def long_running_function(a, b, c):
-  return compute()
+    return compute()
 
 # the following line actually computes the value only
 # when the program runs for the first time. On subsequent 
@@ -19,13 +19,15 @@ def long_running_function(a, b, c):
 x = long_running_function(1, 2, 3)
 ```
 
-Of course, results of different functions with different arguments are stored 
+## Arguments
+
+Results of different functions with different arguments are stored 
 separately.
 
 ``` python3
 @memoize
 def other_function(a, b):
-  return compute()
+    return compute()
 
 # the following calls will cache three different values 
 y1 = long_running_function(1, 2, 3)  
@@ -37,4 +39,34 @@ y3 = other_function(1, 2)
 y4 = other_function(1, b=2)
 y5 = other_function(a=1, b=2)
 y6 = other_function(b=2, a=1)
+```
+
+## Directory
+
+All data is saved in a temporary directory. All data is saved in a temporary 
+directory. You can specify which one.
+
+``` python3
+@memoize(dir_path='/var/tmp/myfuncs')
+def function(a, b):
+    return compute()
+```
+
+## Expiration date
+
+``` python3
+@memoize(max_age = datetime.timedelta(minutes=5))
+def function(a, b):
+    return compute()
+```
+
+## Data version
+
+This parameter is the same as `version` in [pickledir](https://github.com/rtmigo/pickledir_py#readme).
+
+
+``` python3
+@memoize(version=1)
+def function(a, b):
+    return compute()
 ```
