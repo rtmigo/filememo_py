@@ -21,7 +21,7 @@ setup(
     author_email="ortemeo@gmail.com",
     url='https://github.com/rtmigo/filememo_py#readme',
 
-    python_requires='>=3.8',  # needed for faster pickle protocol version 5
+    #python_requires='>=3.8',  # needed for faster pickle protocol version 5
     install_requires=['pickledir'],
     packages=[name],
 
@@ -38,6 +38,7 @@ setup(
     classifiers=[
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: MIT License',
+        # python 3.8 is required by pickledir
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Operating System :: POSIX",

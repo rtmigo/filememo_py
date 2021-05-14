@@ -1,8 +1,15 @@
 # [filememo](https://github.com/rtmigo/filememo_py#readme)
 
-Permanently caches function results.
+File-based **memoization** decorator. Stores the results of expensive function calls and returns the cached result 
+when the same inputs occur again.
 
-Based on [pickledir](https://github.com/rtmigo/pickledir_py#readme).
+CI-tested with Python 3.8-3.9 on macOS, Ubuntu and Windows.
+
+# Install
+
+``` bash
+$ pip3 install filememo
+```
 
 # Use
 
@@ -15,7 +22,7 @@ def long_running_function(a, b, c):
 
 # the following line actually computes the value only
 # when the program runs for the first time. On subsequent 
-# runs, the value is simply read from the file
+# runs, the value is read from the file
 x = long_running_function(1, 2, 3)
 ```
 
