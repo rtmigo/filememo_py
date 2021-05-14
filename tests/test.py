@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: (c) 2020 Artёm IG <github.com/rtmigo>
+# SPDX-License-Identifier: MIT
+
+
 import time
 import unittest
 from datetime import timedelta
@@ -31,6 +35,15 @@ def outer_func(a, b):
 
 static_method_calls = 0
 class_method_calls = 0
+
+noargs_calls = 0
+
+
+@memoize(version=ver)
+def no_args():
+    global noargs_calls
+    noargs_calls += 1
+    pass
 
 
 class Class:
@@ -157,3 +170,9 @@ class TestDecorator(unittest.TestCase):
         self.assertEqual(Class.clmethod(2, 3), 6)
         self.assertEqual(Class.clmethod(2, 3), 6)
         self.assertEqual(class_method_calls, 1)
+
+    def test_noargs(self):
+        self.assertEqual(noargs_calls, 0)
+        no_args()
+        no_args()
+        self.assertEqual(noargs_calls, 1)

@@ -29,7 +29,9 @@ setup(
                 "expensive function calls and returns the cached result "
                 "when the same inputs occur again.",
 
-    keywords="memoize function method cache pickle file directory caching data".split(),
+    keywords="python package memoize memoization cache function file "
+             "persistent method memoize-decorator "
+             "memoization-library permanent pickle".split(),
 
     long_description=(Path(__file__).parent / 'README.md').read_text(),
     long_description_content_type='text/markdown',
