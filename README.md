@@ -69,11 +69,62 @@ def function(a, b):
 
 ## Data version
 
-This parameter is the same as `version` in [pickledir](https://github.com/rtmigo/pickledir_py#readme).
+When you specify `version`, all results with different version values 
+are deprecated.
 
 
 ``` python3
 @memoize(version=1)
 def function(a, b):
-    return compute()
+    return a + b
+```
+
+For example, you changed your mind and now the function should return the 
+product of numbers instead of the sum. But the cache already contains 
+the previous results with the sums. In this case, you can just change
+`version`. Previous results will not be returned.
+
+``` python3
+@memoize(version=2)
+def function(a, b):
+    return a * b
+```
+
+Keep in mind that the version value is common to the entire directory.
+
+Do **not** use different version with the same directory. This will lead to a messy deletion of data from the cache.
+
+``` python3
+@memoize(dir_path='/my/cache/', version=2)  # BAD: version conflict
+def that_function(a, b):
+    pass
+    
+@memoize(dir_path='/my/cache/', version=3)  # BAD: version conflict 
+def other_function(a, b):
+    pass
+```
+
+But if the directories are different, then there is no problem.
+
+``` python3
+@memoize(dir_path='/my/cache/that', version=2)  # OK
+def that_function(a, b):
+    pass
+    
+@memoize(dir_path='/my/cache/other', version=3)  # OK 
+def other_function(a, b):
+    pass
+```
+
+If the directory is not specified, then there are no problems either: the 
+results of different functions are automatically saved in different directories.
+
+``` python3
+@memoize(version=2)  # OK
+def that_function(a, b):
+    pass
+    
+@memoize(version=3)  # OK 
+def other_function(a, b):
+    pass
 ```
