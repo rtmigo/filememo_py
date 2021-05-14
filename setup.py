@@ -25,8 +25,9 @@ setup(
     install_requires=['pickledir'],
     packages=[name],
 
-    description="File-based key-value storage for pickle-serializable "
-                "keys and values.",
+    description="File-based memoization decorator. Stores the results of "
+                "expensive function calls and returns the cached result "
+                "when the same inputs occur again.",
 
     keywords="memoize function method cache pickle file directory caching data".split(),
 
