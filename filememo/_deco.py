@@ -72,9 +72,9 @@ def memoize(method: Callable = None, dir_path: Union[Path, str] = None,
         # we will use a hash to generate the file name.
         # There are no reasons the be afraid of collisions.
         # Even if hashes are the same, item keys will be different
-        dir = Path(tempfile.gettempdir()) / _md5(method_str)
+        dir_path = Path(tempfile.gettempdir()) / _md5(method_str)
 
-    if isinstance(dir_path, str):
+    if isinstance(dir_path, str): # todo do we need this check?
         dir_path = Path(dir_path)
 
     f.data = PickleDir(dirpath=dir_path, version=version)
