@@ -74,7 +74,7 @@ def memoize(method: Callable = None, dir_path: Union[Path, str] = None,
         # Even if hashes are the same, item keys will be different
         dir_path = Path(tempfile.gettempdir()) / _md5(method_str)
 
-    if isinstance(dir_path, str):
+    if isinstance(dir_path, str): # todo do we need this check?
         dir_path = Path(dir_path)
 
     f.data = PickleDir(dirpath=dir_path, version=version)
