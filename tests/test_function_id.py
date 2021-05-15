@@ -1,7 +1,10 @@
-import os
+# SPDX-FileCopyrightText: (c) 2021 Artёm IG <github.com/rtmigo>
+# SPDX-License-Identifier: MIT
+
 import unittest
 
-from filememo._dir_for_method import _file_and_method
+from filememo._dir_for_func import _file_and_method, _caller_not_filememo
+from filememo._indirect_caller import get_caller
 
 
 def func():
@@ -27,6 +30,14 @@ def matroska1():
 
 class Test(unittest.TestCase):
 
+    def test_caller_direct(self):
+        s = _caller_not_filememo()
+        self.assertEqual(s, __file__)
+
+    def test_caller_indirect(self):
+        s = get_caller()
+        self.assertEqual(s, __file__)
+
     def assertEnds(self, s: str, ending: str):
         s = s.replace('\\', '/')
         ending = ending.replace('\\', '/')
@@ -36,20 +47,20 @@ class Test(unittest.TestCase):
     def test_self(self):
         self.assertEnds(
             _file_and_method(self.test_self),
-            '/test_file_and_method.py/Test.test_self')
+            '/test_function_id.py/Test.test_self')
 
     def test_func(self):
         self.assertEnds(
             _file_and_method(func),
-            '/test_file_and_method.py/func')
+            '/test_function_id.py/func')
 
     def test_inner(self):
         self.assertEnds(
             outer(),
-            '/test_file_and_method.py/outer.<locals>.inner')
+            '/test_function_id.py/outer.<locals>.inner')
 
     def test_matroska(self):
         self.assertEnds(
             matroska1(),
-            '/test_file_and_method.py/matroska1.<locals>'
+            '/test_function_id.py/matroska1.<locals>'
             '.matroska2.<locals>.matroska3')
