@@ -176,3 +176,11 @@ class TestDecorator(unittest.TestCase):
         no_args()
         no_args()
         self.assertEqual(noargs_calls, 1)
+
+    def test_path_as_path(self):
+        with TemporaryDirectory() as td:
+            @memoize(dir_path=Path(td))  # not string
+            def function(a: int, b: int) -> int:
+                pass
+
+            function(1, 1)
