@@ -28,8 +28,8 @@ def matroska1():
 class Test(unittest.TestCase):
 
     def assertEnds(self, s: str, ending: str):
-        s = s.replace(os.path.sep, '_')
-        ending = ending.replace(os.path.sep, '_')
+        s = s.replace('\\', '/')
+        ending = ending.replace('\\', '/')
         if not s.endswith(ending):
             self.fail(f'{s} does not end with {ending}')
 
