@@ -11,7 +11,8 @@ The function can be *expensive* because it is slow, or uses a lot of system
 resources, or literally makes a request to a paid API.
 
 The `memoize` decorator returns the cached result when the same function 
-called with the same arguments.
+called with the same arguments. Thus, the function is expensive only once and 
+free further.
 
 For example, the simplest cache for downloaded data can be set like this:
 
