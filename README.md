@@ -1,7 +1,8 @@
 # [filememo](https://github.com/rtmigo/filememo_py#readme)
 
-File-based **memoization** decorator. Stores the results of expensive function calls and returns the cached result 
-when the same inputs occur again.
+File-based **memoization** decorator. Caches the results of slow function calls.
+Returns the cached result when the same function called with the same arguments.
+Retains the cached results between program restarts.
 
 CI-tested with Python 3.8-3.9 on macOS, Ubuntu and Windows.
 
@@ -28,8 +29,7 @@ x = long_running_function(1, 2, 3)
 
 ## Arguments
 
-Results of different functions with different arguments are stored 
-separately.
+Results of different functions with different arguments are stored separately.
 
 ``` python3
 @memoize
@@ -50,7 +50,7 @@ y6 = other_function(b=2, a=1)
 
 ## Directory
 
-All data is saved in a temporary directory. All data is saved in a temporary 
+All data is saved in a temporary directory. All data is saved in a temporary
 directory. You can specify which one.
 
 ``` python3
@@ -69,8 +69,8 @@ def function(a, b):
 
 ## Data version
 
-When you specify `version`, all results with different versions are 
-considered outdated.
+When you specify `version`, all results with different versions are considered
+outdated.
 
 Say you have the following function:
 
@@ -80,9 +80,9 @@ def function(a, b):
     return a + b
 ```
 
-You changed your mind, and now the function should return the 
-product of numbers instead of the sum. But the cache already contains 
-the previous results with the sums. In this case, you can just change
+You changed your mind, and now the function should return the product of numbers
+instead of the sum. But the cache already contains the previous results with the
+sums. In this case, you can just change
 `version`. Previous results will not be returned.
 
 ``` python3
