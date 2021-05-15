@@ -39,7 +39,7 @@ setup(
     license='MIT',
 
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'License :: OSI Approved :: MIT License',
         # python 3.8 is required by pickledir
         "Programming Language :: Python :: 3.8",
