@@ -34,14 +34,11 @@ def _file_and_method(method: Callable) -> str:
     # "<function my_function at 0x125382620>"
     # "<function func1.<locals>.func2 at 0x125382620>"
 
-    strm = str(method)
-    if strm.startswith('<bound method'):
-        function_name = strm.split()[2]
+    string = str(method)
+    if string.startswith('<bound '):  # <bound method
+        function_name = string.split()[2]
     else:
-        function_name = strm.split()[1]
-
-    #print(str(method))
-    #function_name = str(method).split()[1]
+        function_name = string.split()[1]
 
     # "/path/to/loading.py/_getCachedHistory"
     # "/path/to/loading.py/func1.<locals>.func2"
@@ -106,7 +103,6 @@ def memoize(method: Callable = None, dir_path: Union[Path, str] = None,
             # to different temporary directories.
             dir_path = temp_parent / f"{method_hash}_{version}"
 
-    #if isinstance(dir_path, str):  # todo do we need this check?
     dir_path = Path(dir_path)
 
     f.data = PickleDir(dirpath=dir_path,

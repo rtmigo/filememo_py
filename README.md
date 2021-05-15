@@ -69,9 +69,10 @@ def function(a, b):
 
 ## Data version
 
-When you specify `version`, all results with different version values 
-are deprecated.
+When you specify `version`, all results with different versions are 
+considered outdated.
 
+Say you have the following function:
 
 ``` python3
 @memoize(version=1)
@@ -79,7 +80,7 @@ def function(a, b):
     return a + b
 ```
 
-For example, you changed your mind and now the function should return the 
+You changed your mind, and now the function should return the 
 product of numbers instead of the sum. But the cache already contains 
 the previous results with the sums. In this case, you can just change
 `version`. Previous results will not be returned.
