@@ -34,7 +34,14 @@ def _file_and_method(method: Callable) -> str:
     # "<function my_function at 0x125382620>"
     # "<function func1.<locals>.func2 at 0x125382620>"
 
-    function_name = str(method).split()[1]
+    strm = str(method)
+    if strm.startswith('<bound method'):
+        function_name = strm.split()[2]
+    else:
+        function_name = strm.split()[1]
+
+    #print(str(method))
+    #function_name = str(method).split()[1]
 
     # "/path/to/loading.py/_getCachedHistory"
     # "/path/to/loading.py/func1.<locals>.func2"
@@ -46,7 +53,8 @@ def _md5(s: str):
 
 
 def memoize(method: Callable = None, dir_path: Union[Path, str] = None,
-            max_age: datetime.timedelta = None, version: int = 1) -> Callable:
+            max_age: datetime.timedelta = None,
+            version: int = None) -> Callable:
     # If called without method, we've been called with optional arguments.
     # We return a decorator with the optional arguments filled in.
     # Next time round we'll be decorating method.
@@ -73,14 +81,35 @@ def memoize(method: Callable = None, dir_path: Union[Path, str] = None,
         return new_result
 
     if dir_path is None:
-        # we will use a hash to generate the file name.
-        # There are no reasons the be afraid of collisions.
-        # Even if hashes are the same, item keys will be different
-        dir_path = Path(tempfile.gettempdir()) / _md5(method_str)
+        temp_parent = Path(tempfile.gettempdir())
+        method_hash = _md5(method_str)
+        if version is None:
+            # we will use a hash to generate temp directory name.
+            # The items will still have unique key, so there's no reason
+            # to worry about hash collisions
+            dir_path = temp_parent / method_hash
+        else:
+            # todo test
+            assert version is not None
+            # if `version` is specified there is a reason to worry:
+            # - hashes may collide, so two functions will be saved
+            #   in the same directory
+            # - these two functions can use different `version` values,
+            #   which will lead to random item deletion
+            #
+            # This combination of events is somewhat less likely than a
+            # software error due to a computer crash during the end of the
+            # world due to an asteroid impact.
+            #
+            # But we can protect ourselves from at least some of the
+            # described problems. We will just save different versions
+            # to different temporary directories.
+            dir_path = temp_parent / f"{method_hash}_{version}"
 
-    if isinstance(dir_path, str): # todo do we need this check?
-        dir_path = Path(dir_path)
+    #if isinstance(dir_path, str):  # todo do we need this check?
+    dir_path = Path(dir_path)
 
-    f.data = PickleDir(dirpath=dir_path, version=version)
+    f.data = PickleDir(dirpath=dir_path,
+                       version=version if version is not None else 1)
 
     return f
