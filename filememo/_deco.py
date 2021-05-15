@@ -61,7 +61,7 @@ def memoize(function: Callable = None,
     if dir_path is not None:
         func_parent_dir = Path(dir_path)
     else:
-        func_parent_dir = Path(tempfile.gettempdir())
+        func_parent_dir = Path(tempfile.gettempdir())/'filememo'
 
     func_cache_dir = find_dir_for_method(func_parent_dir, function)
 
