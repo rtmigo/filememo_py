@@ -37,12 +37,16 @@ def memoize(function: Callable = None,
 
         # try get existing result from the cache
         try:
-            return f.data[key]
+            # we will use max_age on both reading and writing
+            result = f.data.get(key, max_age=max_age, default=KeyError)
+            assert result != KeyError  # KeyError will be raised, not returned
+            return result
         except KeyError:
             pass
 
         # get new result and store it to the cache
         new_result = function(*args, **kwargs)
+        # we will use max_age on both reading and writing
         f.data.set(key, max_age=max_age, value=new_result)
 
         return new_result
