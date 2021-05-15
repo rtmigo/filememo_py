@@ -3,11 +3,11 @@
 File-based **memoization** decorator. Caches the results of expensive function calls.
 Retains the cached results between program restarts.
 
-CI-tested with Python 3.8-3.9 on macOS, Ubuntu and Windows.
+CI tests are done in Python 3.8-3.9 on macOS, Ubuntu and Windows.
 
 ---
 
-The function can be "expensive" because it is slow, or uses a lot of system 
+The function can be **expensive** because it is slow, or uses a lot of system 
 resources, or literally makes a request to a paid API.
 
 The `memoize` decorator returns the cached result when the same function 
@@ -57,7 +57,8 @@ x = long_running_function(1, 2, 3)
 
 ## Function arguments
 
-Results of different functions with different arguments are stored separately.
+The results depend on both the function and its arguments. And of course they 
+are cached separately.
 
 ``` python3
 @memoize
