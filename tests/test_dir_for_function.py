@@ -1,9 +1,13 @@
+# SPDX-FileCopyrightText: (c) 2021 Artёm IG <github.com/rtmigo>
+# SPDX-License-Identifier: MIT
+
 import unittest
 from pathlib import Path
-from pickledir import PickleDir
 from tempfile import TemporaryDirectory
 
-from filememo._dir_for_method import find_dir_for_method, PathCandidate
+from pickledir import PickleDir
+
+from filememo._dir_for_func import find_dir_for_method, PathCandidate
 
 
 def func_a():

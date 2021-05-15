@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (c) 2021 Artёm IG <github.com/rtmigo>
+# SPDX-License-Identifier: MIT
+
 import os
 import shutil
 import sys
@@ -68,7 +71,7 @@ class TestPersist(unittest.TestCase):
 
         self.assertFalse(f.exists())
 
-        version = int(time.time()*1000)
+        version = int(time.time() * 1000)
 
         for _ in range(3):
             check_call((sys.executable,
@@ -80,6 +83,4 @@ class TestPersist(unittest.TestCase):
 
         self.assertEqual(f.read_text(), '1')
 
-
-
-        #self.assertLessEqual(int(f.read_text()), 1)
+        # self.assertLessEqual(int(f.read_text()), 1)

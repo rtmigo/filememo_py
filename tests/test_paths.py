@@ -1,8 +1,11 @@
-import unittest
-from filememo import memoize
-from pathlib import Path
+# SPDX-FileCopyrightText: (c) 2021 Artёm IG <github.com/rtmigo>
+# SPDX-License-Identifier: MIT
 
+import unittest
+from pathlib import Path
 from tempfile import TemporaryDirectory
+
+from filememo import memoize
 
 
 class TestDirPath(unittest.TestCase):
