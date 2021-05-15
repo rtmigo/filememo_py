@@ -22,6 +22,8 @@ def _caller_not_filememo() -> str:
         if frame.filename.startswith('<'):
             continue
         candidate = os.path.abspath(frame.filename)
+        # the following works only for modules in `filememo`, not in
+        # `filememo.subpackage`
         if os.path.basename(os.path.dirname(candidate)) == 'filememo':
             continue
         if candidate != this_file_absolute:
