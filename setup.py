@@ -22,7 +22,7 @@ setup(
     url='https://github.com/rtmigo/filememo_py#readme',
 
     #python_requires='>=3.8',  # needed for faster pickle protocol version 5
-    install_requires=['pickledir'],
+    install_requires=['pickledir>=0.3.5'],
     packages=[name],
 
     description="File-based memoization decorator. Stores the results of "

@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from filememo._deco import _file_and_method
+from filememo._dir_for_method import _file_and_method
 
 
 def func():

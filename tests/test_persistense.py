@@ -54,7 +54,7 @@ class TestPersist(unittest.TestCase):
                         'tests.keeps_value.run_me_twice',
                         'non_memoized'))
 
-        self.assertFalse(cache_path.exists())
+        self.assertTrue(cache_path.exists())
         self.assertEqual(f.read_text(), '3')
 
     def test_systemp(self):
@@ -67,7 +67,6 @@ class TestPersist(unittest.TestCase):
             os.remove(f)
 
         self.assertFalse(f.exists())
-        self.assertFalse(cache_path.exists())
 
         version = int(time.time()*1000)
 
