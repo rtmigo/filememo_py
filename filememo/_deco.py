@@ -11,7 +11,7 @@ from typing import Callable, Union
 
 from pickledir import PickleDir
 
-from filememo._dir_for_method import find_dir_for_method
+from filememo._dir_for_func import find_dir_for_method
 
 
 def _md5(s: str):

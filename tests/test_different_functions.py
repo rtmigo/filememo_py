@@ -67,7 +67,7 @@ class TestDecorator(unittest.TestCase):
 
     # test caching BETWEEN program runs
 
-    def test(self):
+    def test_calls_count(self):
         with TemporaryDirectory() as td:
             tempTestDir = Path(td) / "TestDecorator"
             print("Using temp directory", tempTestDir)

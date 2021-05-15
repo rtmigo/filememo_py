@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (c) 2020 Artёm IG <github.com/rtmigo>
+# SPDX-License-Identifier: MIT
+
 import hashlib
 import os
 from pathlib import Path
@@ -8,23 +11,33 @@ def _md5(s: str):
     return hashlib.md5(s.encode('utf-8')).hexdigest()
 
 
-def _file_and_method(method: Callable) -> str:
-    # it helps the decorator to understand what function he is decorating:
-    # in what file it is and what it is called
-
+def _caller_not_filememo() -> str:
     import inspect
 
     # finding the first file in the stack that is not-current (not _deco.py).
     # Presumably this is the file where the decorator is used
 
-    abs_file = os.path.abspath(__file__)
-    filename = None
+    this_file_absolute = os.path.abspath(__file__)
     for frame in inspect.stack():
-        a = os.path.abspath(frame.filename)
-        if a != abs_file:
-            filename = a
-            break
-    assert filename is not None
+        if frame.filename.startswith('<'):
+            continue
+        candidate = os.path.abspath(frame.filename)
+        if os.path.basename(os.path.dirname(candidate)) == 'filememo':
+            continue
+        if candidate != this_file_absolute:
+            return candidate
+
+    raise RuntimeError
+
+
+def _file_and_method(method: Callable) -> str:
+    # it helps the decorator to understand what function he is decorating:
+    # in what file it is and what it is called
+
+    # finding the first file in the stack that is not-current (not _deco.py).
+    # Presumably this is the file where the decorator is used
+
+    filename = _caller_not_filememo()
 
     # when we convent a callable to a string, we get somethong like
     # "<function my_function at 0x125382620>"
@@ -76,7 +89,7 @@ def find_dir_for_method(parent: Path, method: Callable,
                         hash_func: Callable = _md5) -> Path:
     method_str = _file_and_method(method)
     method_hash = hash_func(method_str)
-    for i in range(999):
+    for i in range(1000):
         path_candidate = PathCandidate(parent / f'{method_hash}_{i}')
 
         if not path_candidate.path.exists():
@@ -88,3 +101,5 @@ def find_dir_for_method(parent: Path, method: Callable,
             return path_candidate.path
 
         # try next candidate
+
+    raise RuntimeError("Got 1000 hash collisions? Something is wrong.")
