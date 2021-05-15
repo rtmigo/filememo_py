@@ -4,7 +4,7 @@
 import unittest
 
 from filememo._dir_for_func import _file_and_method, _caller_not_filememo
-from filememo._indirect_caller import get_caller
+from filememo._indirect_caller import get_caller_indirect
 
 
 def func():
@@ -35,7 +35,7 @@ class Test(unittest.TestCase):
         self.assertEqual(s, __file__)
 
     def test_caller_indirect(self):
-        s = get_caller()
+        s = get_caller_indirect()
         self.assertEqual(s, __file__)
 
     def assertEnds(self, s: str, ending: str):

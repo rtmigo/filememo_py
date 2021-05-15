@@ -4,10 +4,10 @@
 from ._dir_for_func import _caller_not_filememo
 
 
-def get_caller():
+def get_caller_indirect():
     """Helps to test the _caller_not_filememo function.
-    It is important that the _caller_not_filememo is called FROM filememo,
-    from OTHER file than the defines the _caller_not_filememo.
-    But as a result we are expecting the get the caller of `get_caller`.
+    This function needs to be declared inside `filememo` not, in `tests`.
+    The result of the function must be the file that called
+    `get_caller_indirect`
     """
     return _caller_not_filememo()
