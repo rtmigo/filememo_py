@@ -7,7 +7,7 @@ CI tests are done in Python 3.8-3.9 on macOS, Ubuntu and Windows.
 
 ---
 
-The function can be **expensive** because it is slow, or uses a lot of system 
+The function can be *expensive* because it is slow, or uses a lot of system 
 resources, or literally makes a request to a paid API.
 
 The `memoize` decorator returns the cached result when the same function 
