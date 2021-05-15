@@ -58,7 +58,7 @@ x = long_running_function(1, 2, 3)
 
 ## Function arguments
 
-The results depend on both the function and its arguments. They 
+The results depend on both the function and its arguments. All results 
 are cached separately.
 
 ``` python3
