@@ -21,7 +21,7 @@ setup(
     author_email="ortemeo@gmail.com",
     url='https://github.com/rtmigo/filememo_py#readme',
 
-    #python_requires='>=3.8',  # needed for faster pickle protocol version 5
+    python_requires='>=3.8',  # needed by pickledir
     install_requires=['pickledir>=0.3.5'],
     packages=[name],
 
