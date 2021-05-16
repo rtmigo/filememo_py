@@ -18,12 +18,12 @@ For example, the simplest cache for downloaded data can be set like this:
 
 ``` python3
 @memoize
-def cached_http(url):
+def downloaded(url):
     return requests.get(url)
     
-cached_http("http://example.net/aaa")  # downloads data
-cached_http("http://example.net/bbb")  # downloads data
-cached_http("http://example.net/aaa")  # gets data from cache   
+downloaded("http://example.net/aaa")  # downloads data
+downloaded("http://example.net/bbb")  # downloads data
+downloaded("http://example.net/aaa")  # gets data from cache   
 ```
 
 Data is saved to the file system using 
@@ -32,7 +32,7 @@ restart, the cached results will be in place.
 
 ``` python3
 # gets data from cache after restart
-cached_http("http://example.net/aaa")     
+downloaded("http://example.net/aaa")     
 ```
 
 # Install
