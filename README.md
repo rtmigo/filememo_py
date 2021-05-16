@@ -180,8 +180,8 @@ The `exceptions_max_age = None` argument will prevent exceptions from
 being cached. Each error will be considered a one-time error.
 
 ``` python3
-@memoize
-def download(url, exceptions_max_age = None):
+@memoize(exceptions_max_age = None)
+def download(url):
     return http_get(url)
     
 while True:
