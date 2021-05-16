@@ -65,6 +65,9 @@ def memoize(function: Callable = None,
     if max_age is None:
         raise ValueError('max_age must not be None')
 
+    ##############################################################
+    # THE FUNCTION TO RUN ON EVERY CALL
+
     @functools.wraps(function)
     def f(*args, **kwargs):
         key = (args, kwargs)
@@ -75,45 +78,48 @@ def memoize(function: Callable = None,
         record = f.data._get_record(key)
         if record is not None:
 
-            exception, result = record.data
+            old_exception, old_result = record.data
 
-            if exception:
+            if old_exception is not None:
                 if not _outdated_exc(record.created, exceptions_max_age):
-                    raise FunctionException(exception)
+                    raise FunctionException(old_exception)
             else:
-                assert exception is None
+                assert old_exception is None
                 # we don't need to delete anything on reading
                 if not _outdated_result(record.created, max_age):
-                    return result
+                    return old_result
 
             # we did not return result and did not raise exception.
-            # We will just restart the function
+            # We will restart the function
 
         # COMPUTING NEW RESULT AND SAVING TO CACHE
-
-        # get new result and store it to the cache
-        exception: Optional[BaseException] = None
-        result = None
         try:
-            result = function(*args, **kwargs)
+            new_result = function(*args, **kwargs)
+            new_exception = None
         except BaseException as exc:
-            if exceptions_max_age is None:
-                raise FunctionException(exception)
-            exception = exc
+            new_exception = exc
+            new_result = None
 
-        assert exception is None or exceptions_max_age is not None
+        if new_exception is not None and exceptions_max_age is None:
+            raise FunctionException(new_exception)
+
+        assert new_exception is None or exceptions_max_age is not None
+        assert new_exception is None or new_result is None
 
         # we will use max_age on both reading and writing
         f.data.set(key,
                    max_age=_max_to_none(exceptions_max_age
-                                        if exception
+                                        if new_exception is not None
                                         else max_age),
-                   value=(exception, result))
+                   value=(new_exception, new_result))
 
-        if exception:
-            raise FunctionException(exception)
+        if new_exception is not None:
+            raise FunctionException(new_exception)
         else:
-            return result
+            return new_result
+
+    ##############################################################
+    # CONTINUING INITIALIZING THE DECORATOR
 
     # dir_path is the parent path. Within this directory, we will create
     # a subdirectory that uniquely matches the function we are decorating.
