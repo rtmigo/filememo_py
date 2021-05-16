@@ -42,6 +42,13 @@ def _outdated_exc(created: dt.datetime, max_age: Optional[dt.timedelta]):
     return (_utc() - created) > max_age
 
 
+def _outdated_result(created: dt.datetime, max_age: dt.timedelta):
+    assert max_age is not None
+    if max_age == dt.timedelta.max:
+        return False
+    return (_utc() - created) > max_age
+
+
 def memoize(function: Callable = None,
             dir_path: Union[Path, str] = None,
             max_age: dt.timedelta = dt.timedelta.max,
@@ -55,8 +62,6 @@ def memoize(function: Callable = None,
                                  version=version,
                                  exceptions_max_age=exceptions_max_age)
 
-    # method_str = _file_and_method(method)
-
     if max_age is None:
         raise ValueError('max_age must not be None')
 
@@ -64,35 +69,37 @@ def memoize(function: Callable = None,
     def f(*args, **kwargs):
         key = (args, kwargs)
 
-        # try get existing result from the cache
-        # try:
+        # TRYING TO RETURN FROM CACHE
+
         # we will use max_age on both reading and writing
-
-        # print(f.data.dirpath)
-
-        record = f.data._get_record(key, max_age=_max_to_none(max_age))
+        record = f.data._get_record(key)
         if record is not None:
 
             exception, result = record.data
-            if not exception:
-                return result
 
-            assert exception is not None
-            if not _outdated_exc(record.created, exceptions_max_age):
-                raise FunctionException(exception)
+            if exception:
+                if not _outdated_exc(record.created, exceptions_max_age):
+                    raise FunctionException(exception)
+            else:
+                assert exception is None
+                # we don't need to delete anything on reading
+                if not _outdated_result(record.created, max_age):
+                    return result
 
             # we did not return result and did not raise exception.
             # We will just restart the function
+
+        # COMPUTING NEW RESULT AND SAVING TO CACHE
 
         # get new result and store it to the cache
         exception: Optional[BaseException] = None
         result = None
         try:
             result = function(*args, **kwargs)
-        except BaseException as error:
-            if not exceptions_max_age:
+        except BaseException as exc:
+            if exceptions_max_age is None:
                 raise FunctionException(exception)
-            exception = error
+            exception = exc
 
         assert exception is None or exceptions_max_age is not None
 
@@ -105,8 +112,8 @@ def memoize(function: Callable = None,
 
         if exception:
             raise FunctionException(exception)
-
-        return result
+        else:
+            return result
 
     # dir_path is the parent path. Within this directory, we will create
     # a subdirectory that uniquely matches the function we are decorating.
