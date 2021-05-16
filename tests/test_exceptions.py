@@ -25,11 +25,13 @@ class TestExceptions(unittest.TestCase):
                 return a / b
 
             self.assertEqual(calls, 0)
-            with self.assertRaises(FunctionException):
+            with self.assertRaises(FunctionException) as cm:
                 divide(1, 0)
+            self.assertIsInstance(cm.exception.inner, ZeroDivisionError)
             self.assertEqual(calls, 1)
-            with self.assertRaises(FunctionException):
+            with self.assertRaises(FunctionException) as cm:
                 divide(1, 0)
+            self.assertIsInstance(cm.exception.inner, ZeroDivisionError)
             self.assertEqual(calls, 1)
 
     def test_do_not_cache_exceptions(self):
@@ -43,14 +45,16 @@ class TestExceptions(unittest.TestCase):
                 return a / b
 
             self.assertEqual(calls, 0)
-            with self.assertRaises(FunctionException):
+            with self.assertRaises(FunctionException) as cm:
                 divide(1, 0)
+            self.assertIsInstance(cm.exception.inner, ZeroDivisionError)
             self.assertEqual(calls, 1)
-            with self.assertRaises(FunctionException):
+            with self.assertRaises(FunctionException) as cm:
                 divide(1, 0)
+            self.assertIsInstance(cm.exception.inner, ZeroDivisionError)
             self.assertEqual(calls, 2)
 
-    def test_do_not_cache_exceptions_max_age(self):
+    def test_exceptions_max_age(self):
         with TemporaryDirectory() as td:
             calls = 0
 
@@ -61,18 +65,23 @@ class TestExceptions(unittest.TestCase):
                 return a / b
 
             self.assertEqual(calls, 0)
-            with self.assertRaises(FunctionException):
+            with self.assertRaises(FunctionException) as cm:
                 divide(1, 0)
+            self.assertIsInstance(cm.exception.inner, ZeroDivisionError)
+
             self.assertEqual(calls, 1)
-            with self.assertRaises(FunctionException):
+            with self.assertRaises(FunctionException) as cm:
                 divide(1, 0)
+            self.assertIsInstance(cm.exception.inner, ZeroDivisionError)
             self.assertEqual(calls, 1)
 
             time.sleep(1)
 
-            with self.assertRaises(FunctionException):
+            with self.assertRaises(FunctionException) as cm:
                 divide(1, 0)
+            self.assertIsInstance(cm.exception.inner, ZeroDivisionError)
             self.assertEqual(calls, 2)
-            with self.assertRaises(FunctionException):
+            with self.assertRaises(FunctionException) as cm:
                 divide(1, 0)
+            self.assertIsInstance(cm.exception.inner, ZeroDivisionError)
             self.assertEqual(calls, 2)
