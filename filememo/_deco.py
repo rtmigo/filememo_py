@@ -42,6 +42,13 @@ def _outdated_exc(created: dt.datetime, max_age: Optional[dt.timedelta]):
     return (_utc() - created) > max_age
 
 
+def _outdated_result(created: dt.datetime, max_age: dt.timedelta):
+    assert max_age is not None
+    if max_age == dt.timedelta.max:
+        return False
+    return (_utc() - created) > max_age
+
+
 def memoize(function: Callable = None,
             dir_path: Union[Path, str] = None,
             max_age: dt.timedelta = dt.timedelta.max,
@@ -64,22 +71,20 @@ def memoize(function: Callable = None,
     def f(*args, **kwargs):
         key = (args, kwargs)
 
-        # try get existing result from the cache
-        # try:
         # we will use max_age on both reading and writing
-
-        # print(f.data.dirpath)
-
-        record = f.data._get_record(key, max_age=_max_to_none(max_age))
+        record = f.data._get_record(key)
         if record is not None:
 
             exception, result = record.data
-            if not exception:
-                return result
 
-            assert exception is not None
-            if not _outdated_exc(record.created, exceptions_max_age):
-                raise FunctionException(exception)
+            if exception:
+                if not _outdated_exc(record.created, exceptions_max_age):
+                    raise FunctionException(exception)
+            else:
+                assert exception is None
+                # we don't need to delete anything on reading
+                if not _outdated_result(record.created, max_age):
+                    return result
 
             # we did not return result and did not raise exception.
             # We will just restart the function
