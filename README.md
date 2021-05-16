@@ -227,5 +227,5 @@ between function calls.
 
 If the data is already in disk cache, and the program is just started, then
 calling `too_expensive(33)` for the first time will read the result for
-argument `33` from disk once. Further calls to `too_expensive(33)` will return
+argument `33` from disk. Further calls to `too_expensive(33)` will return
 the result from memory.
