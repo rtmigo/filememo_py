@@ -57,15 +57,13 @@ class Class:
 
     @classmethod
     @memoize(version=ver)
-    def clmethod(cls, a, b):
+    def class_method(cls, a, b):
         global class_method_calls
         class_method_calls += 1
         return a * b
 
 
 class TestDecorator(unittest.TestCase):
-
-    # test caching BETWEEN program runs
 
     def test_calls_count(self):
         with TemporaryDirectory() as td:
@@ -167,8 +165,8 @@ class TestDecorator(unittest.TestCase):
 
     def test_class_method(self):
         self.assertEqual(class_method_calls, 0)
-        self.assertEqual(Class.clmethod(2, 3), 6)
-        self.assertEqual(Class.clmethod(2, 3), 6)
+        self.assertEqual(Class.class_method(2, 3), 6)
+        self.assertEqual(Class.class_method(2, 3), 6)
         self.assertEqual(class_method_calls, 1)
 
     def test_noargs(self):
@@ -180,7 +178,7 @@ class TestDecorator(unittest.TestCase):
     def test_path_as_path(self):
         with TemporaryDirectory() as td:
             @memoize(dir_path=Path(td))  # not string
-            def function(a: int, b: int) -> int:
+            def function(_: int, __: int) -> int:
                 pass
 
             function(1, 1)
