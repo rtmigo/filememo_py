@@ -3,7 +3,8 @@
 File-based **memoization** decorator. Caches the results of expensive function
 calls. Retains the cached results between program restarts.
 
-CI tests are done in Python 3.8, 3.9 and 3.10-beta.1 on macOS, Ubuntu and Windows.
+CI tests are done in Python 3.8, 3.9 and 3.10-beta.1 on macOS, Ubuntu and
+Windows.
 
 ---
 
@@ -217,8 +218,8 @@ from filememo import memoize
 
 @lru_cache
 @memoize
-def too_expensive(x):
-    return compute(x)
+def too_expensive():
+    return compute()
 ```
 
 In this example, the `filememo` disk cache will be used to store the results
@@ -226,6 +227,5 @@ between program runs, while the `functools` RAM cache will store the results
 between function calls.
 
 If the data is already in disk cache, and the program is just started, then
-calling `too_expensive(33)` for the first time will read the result for
-argument `33` from disk. Further calls to `too_expensive(33)` will return
-the result from memory.
+calling `too_expensive()` for the first time will read the result from disk.
+Further calls to `too_expensive()` will return the result from memory.
