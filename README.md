@@ -180,8 +180,8 @@ The `exceptions_max_age = None` argument will prevent exceptions from
 being cached. Each error will be considered a one-time error.
 
 ``` python3
-@memoize
-def download(url, exceptions_max_age = None):
+@memoize(exceptions_max_age = None)
+def download(url):
     return http_get(url)
     
 while True:
@@ -197,6 +197,8 @@ You can also set the expiration time for cached exceptions. It may differ
 from the caching time of the data itself.
 
 ``` python3
+# keep downloaded data for a day, remember connection errors for 5 minutes
+
 @memoize(max_age = datetime.timedelta(days: 1)
          exceptions_max_age = datetime.timedelta(minutes: 5))
 def download(url):
