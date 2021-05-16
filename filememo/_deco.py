@@ -62,14 +62,14 @@ def memoize(function: Callable = None,
                                  version=version,
                                  exceptions_max_age=exceptions_max_age)
 
-    # method_str = _file_and_method(method)
-
     if max_age is None:
         raise ValueError('max_age must not be None')
 
     @functools.wraps(function)
     def f(*args, **kwargs):
         key = (args, kwargs)
+
+        # TRYING TO RETURN FROM CACHE
 
         # we will use max_age on both reading and writing
         record = f.data._get_record(key)
@@ -89,15 +89,17 @@ def memoize(function: Callable = None,
             # we did not return result and did not raise exception.
             # We will just restart the function
 
+        # COMPUTING NEW RESULT AND SAVING TO CACHE
+
         # get new result and store it to the cache
         exception: Optional[BaseException] = None
         result = None
         try:
             result = function(*args, **kwargs)
-        except BaseException as error:
-            if not exceptions_max_age:
+        except BaseException as exc:
+            if exceptions_max_age is None:
                 raise FunctionException(exception)
-            exception = error
+            exception = exc
 
         assert exception is None or exceptions_max_age is not None
 
@@ -110,8 +112,8 @@ def memoize(function: Callable = None,
 
         if exception:
             raise FunctionException(exception)
-
-        return result
+        else:
+            return result
 
     # dir_path is the parent path. Within this directory, we will create
     # a subdirectory that uniquely matches the function we are decorating.
