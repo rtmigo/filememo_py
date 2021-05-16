@@ -45,10 +45,12 @@ jobs:
         run: |
           pip3 install neatest
           python ./test_unit.py
-      - name: Run pkg tests
-        if: matrix.os != 'windows-latest'
+      - name: Prepare pkg tests
         run: |
-          ./test_pkg.sh
+          pip install git+https://github.com/rtmigo/chkpkg_py#egg=chkpkg
+      - name: Run pkg tests
+        run: |
+          python ./test_pkg.py
 
   to-staging:
     needs: test
