@@ -47,7 +47,8 @@ jobs:
           python ./test_unit.py
       - name: Prepare pkg tests
         run: |
-          pip install git+https://github.com/rtmigo/chkpkg_py#egg=chkpkg
+          pip install chkpkg
+          #pip install git+https://github.com/rtmigo/chkpkg_py#egg=chkpkg
       - name: Run pkg tests
         run: |
           python ./test_pkg.py
