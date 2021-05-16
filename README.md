@@ -18,12 +18,12 @@ For example, the simplest cache for downloaded data can be set like this:
 
 ``` python3
 @memoize
-def cached_http(url):
+def downloaded(url):
     return requests.get(url)
     
-cached_http("http://example.net/aaa")  # downloads data
-cached_http("http://example.net/bbb")  # downloads data
-cached_http("http://example.net/aaa")  # gets data from cache   
+downloaded("http://example.net/aaa")  # downloads data
+downloaded("http://example.net/bbb")  # downloads data
+downloaded("http://example.net/aaa")  # gets data from cache   
 ```
 
 Data is saved to the file system using 
@@ -32,7 +32,7 @@ restart, the cached results will be in place.
 
 ``` python3
 # gets data from cache after restart
-cached_http("http://example.net/aaa")     
+downloaded("http://example.net/aaa")     
 ```
 
 # Install
@@ -58,7 +58,7 @@ x = long_running_function(1, 2, 3)
 
 ## Function arguments
 
-The results depend on both the function and its arguments. They 
+The results depend on both the function and its arguments. All results 
 are cached separately.
 
 ``` python3
@@ -150,3 +150,57 @@ def function(a, b):
 Note that all **other** than the current version are deprecated, 
 regardless of whether their value is greater or less. If you used `version=10`, 
 and then started using `version=9`, then 9 is considered current, and 10 is obsolete.
+
+## Exceptions
+
+If the decorated function throws an exception, the error is considered 
+permanent. The exception is stored in the cache and will be raised every time.
+
+``` python3
+from filememo import memoize, FunctionException
+
+@memoize
+def divide(a, b):
+    return a / b
+
+try:
+    # tryng to run the function for the first time
+    divide(1, 0)
+except FunctionException as e:
+    print(f"Error: {e.inner}")      
+
+try:
+    # not actually running again, getting error from cache
+    divide(1, 0)
+except FunctionException as e:
+    print(f"Cached error: {e.inner}")      
+```
+
+The `exceptions_max_age = None` argument will prevent exceptions from 
+being cached. Each error will be considered a one-time error.
+
+``` python3
+@memoize(exceptions_max_age = None)
+def download(url):
+    return http_get(url)
+    
+while True:
+    try:
+        download('http://sample.net/path')
+        break
+    except FunctionException:
+        time.sleep(1)
+        # will retry        
+```
+
+You can also set the expiration time for cached exceptions. It may differ 
+from the caching time of the data itself.
+
+``` python3
+# keep downloaded data for a day, remember connection errors for 5 minutes
+
+@memoize(max_age = datetime.timedelta(days: 1)
+         exceptions_max_age = datetime.timedelta(minutes: 5))
+def download(url):
+    return http_get(url)
+```
