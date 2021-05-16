@@ -2,11 +2,12 @@ import sys
 from pathlib import Path
 from filememo import memoize
 
-cache_path = Path(__file__).parent / "_cachedir"
+cache_path = Path(__file__).parent / "temp" / "cachedir"
 
 
 def increase_value_in_file(basename: str):
-    file = (Path(__file__).parent / basename)
+    file = (Path(__file__).parent / "temp" / basename)
+    file.parent.mkdir(exist_ok=True)
     try:
         t = file.read_text()
     except FileNotFoundError:

@@ -9,7 +9,10 @@ import unittest
 from pathlib import Path
 from subprocess import check_call
 
-from .keeps_value.run_me_twice import cache_path
+from .persistence.run_me_in_process import cache_path
+
+output_dir = Path(__file__).parent / "persistence" / "temp"
+module = 'tests.persistence.run_me_in_process'
 
 
 class TestPersist(unittest.TestCase):
@@ -21,7 +24,7 @@ class TestPersist(unittest.TestCase):
         if cache_path.exists():
             shutil.rmtree(cache_path)
 
-        f = Path(__file__).parent / "keeps_value" / "_memoized.txt"
+        f = output_dir / "_memoized.txt"
         if f.exists():
             os.remove(f)
 
@@ -31,7 +34,7 @@ class TestPersist(unittest.TestCase):
         for _ in range(3):
             check_call((sys.executable,
                         '-m',
-                        'tests.keeps_value.run_me_twice',
+                        module,
                         'memoized'))
 
         self.assertTrue(cache_path.exists())
@@ -44,7 +47,7 @@ class TestPersist(unittest.TestCase):
         if cache_path.exists():
             shutil.rmtree(cache_path)
 
-        f = Path(__file__).parent / "keeps_value" / "_non_memoized.txt"
+        f = output_dir / "_non_memoized.txt"
         if f.exists():
             os.remove(f)
 
@@ -54,7 +57,7 @@ class TestPersist(unittest.TestCase):
         for _ in range(3):
             check_call((sys.executable,
                         '-m',
-                        'tests.keeps_value.run_me_twice',
+                        module,
                         'non_memoized'))
 
         self.assertTrue(cache_path.exists())
@@ -65,7 +68,7 @@ class TestPersist(unittest.TestCase):
         # the values are cached between calls. In other words, it's not
         # a new temp directory each time
 
-        f = Path(__file__).parent / "keeps_value" / "_memoized_systemp.txt"
+        f = output_dir / "_memoized_systemp.txt"
         if f.exists():
             os.remove(f)
 
@@ -76,11 +79,8 @@ class TestPersist(unittest.TestCase):
         for _ in range(3):
             check_call((sys.executable,
                         '-m',
-                        'tests.keeps_value.run_me_twice',
+                        module,
                         'systemp',
-                        str(version)
-                        ))
+                        str(version)))
 
         self.assertEqual(f.read_text(), '1')
-
-        # self.assertLessEqual(int(f.read_text()), 1)
