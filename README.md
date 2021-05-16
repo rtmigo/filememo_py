@@ -197,6 +197,8 @@ You can also set the expiration time for cached exceptions. It may differ
 from the caching time of the data itself.
 
 ``` python3
+# keep downloaded data for a day, remember connection errors for 5 minutes
+
 @memoize(max_age = datetime.timedelta(days: 1)
          exceptions_max_age = datetime.timedelta(minutes: 5))
 def download(url):

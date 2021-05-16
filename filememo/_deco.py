@@ -27,6 +27,21 @@ def _utc() -> dt.datetime:
     return dt.datetime.utcnow().replace(tzinfo=dt.timezone.utc)
 
 
+def _max_to_none(delta: dt.timedelta) -> Optional[dt.timedelta]:
+    if delta == dt.timedelta.max:
+        return None
+    else:
+        return delta
+
+
+def _outdated_exc(created: dt.datetime, max_age: Optional[dt.timedelta]):
+    if max_age == dt.timedelta.max:
+        return False
+    if max_age is None:  # means zero
+        return True
+    return (_utc() - created) > max_age
+
+
 def memoize(function: Callable = None,
             dir_path: Union[Path, str] = None,
             max_age: dt.timedelta = dt.timedelta.max,
@@ -42,6 +57,9 @@ def memoize(function: Callable = None,
 
     # method_str = _file_and_method(method)
 
+    if max_age is None:
+        raise ValueError('max_age must not be None')
+
     @functools.wraps(function)
     def f(*args, **kwargs):
         key = (args, kwargs)
@@ -52,25 +70,19 @@ def memoize(function: Callable = None,
 
         # print(f.data.dirpath)
 
-        pd_result_max_age = max_age if max_age != dt.timedelta.max else None
-
-        record = f.data._get_record(key, max_age=pd_result_max_age)
+        record = f.data._get_record(key, max_age=_max_to_none(max_age))
         if record is not None:
 
             exception, result = record.data
-
             if not exception:
-                assert result != KeyError  # KeyError will be raised, not returned
                 return result
 
             assert exception is not None
-            if exceptions_max_age == dt.timedelta.max or \
-                    (_utc() - record.created) <= exceptions_max_age:
+            if not _outdated_exc(record.created, exceptions_max_age):
                 raise FunctionException(exception)
-            else:
-                # we did not return result and did not raise exception.
-                # We will just restart the function
-                pass
+
+            # we did not return result and did not raise exception.
+            # We will just restart the function
 
         # get new result and store it to the cache
         exception: Optional[BaseException] = None
@@ -84,13 +96,11 @@ def memoize(function: Callable = None,
 
         assert exception is None or exceptions_max_age is not None
 
-        pd_exception_max_age = (exceptions_max_age
-                                if exceptions_max_age != dt.timedelta.max
-                                else None)
-
         # we will use max_age on both reading and writing
         f.data.set(key,
-                   max_age=pd_exception_max_age if exception else pd_result_max_age,
+                   max_age=_max_to_none(exceptions_max_age
+                                        if exception
+                                        else max_age),
                    value=(exception, result))
 
         if exception:
