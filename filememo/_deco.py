@@ -104,11 +104,12 @@ def memoize(function: Callable = None,
             raise FunctionException(new_exception)
 
         assert new_exception is None or exceptions_max_age is not None
+        assert new_exception is None or new_result is None
 
         # we will use max_age on both reading and writing
         f.data.set(key,
                    max_age=_max_to_none(exceptions_max_age
-                                        if new_exception
+                                        if new_exception is not None
                                         else max_age),
                    value=(new_exception, new_result))
 
