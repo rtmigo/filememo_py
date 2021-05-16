@@ -204,3 +204,28 @@ from the caching time of the data itself.
 def download(url):
     return http_get(url)
 ```
+
+## In-memory caching
+
+Each call to a function decorated with `@memoize` results in I/O operations.
+If your absolute priority is performance, then even reading from the disk cache 
+can be considered expensive. Although `filememo` does not attempt to cache the 
+read data in memory, this functionality is easy to achieve by combining 
+decorators.
+
+``` python3
+from functools import lru_cache
+from filememo import memoize
+
+@lru_cache
+@memoize
+def too_expensive(x):
+    return compute(x)
+```
+
+In this example, the `filememo` disk cache will be used to store the results between 
+program runs, while the `functools` RAM cache will store the results between function calls.
+
+If the data is already in disk cache, then calling `too_expensive(33)` for the 
+first time will read the result for argument `33` from disk once. Further 
+calls to `too_expensive(33)` will return the result from memory.

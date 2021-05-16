@@ -53,14 +53,16 @@ def memoize(function: Callable = None,
             dir_path: Union[Path, str] = None,
             max_age: dt.timedelta = dt.timedelta.max,
             exceptions_max_age: Optional[dt.timedelta] = dt.timedelta.max,
-            version: int = None) -> Callable:
+            version: int = None,
+            _on_call: Callable = None) -> Callable:
     # If called without method, we've been called with optional arguments.
     # We return a decorator with the optional arguments filled in.
     # Next time round we'll be decorating method.
     if function is None:
         return functools.partial(memoize, dir_path=dir_path, max_age=max_age,
                                  version=version,
-                                 exceptions_max_age=exceptions_max_age)
+                                 exceptions_max_age=exceptions_max_age,
+                                 _on_call=_on_call)
 
     if max_age is None:
         raise ValueError('max_age must not be None')
@@ -94,6 +96,8 @@ def memoize(function: Callable = None,
 
         # COMPUTING NEW RESULT AND SAVING TO CACHE
         try:
+            if _on_call is not None:
+                _on_call(*args, **kwargs)
             new_result = function(*args, **kwargs)
             new_exception = None
         except BaseException as exc:
