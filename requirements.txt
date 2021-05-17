@@ -1,2 +1,3 @@
 neatest
 pickledir
+chkpkg
