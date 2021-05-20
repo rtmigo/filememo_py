@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Optional, Callable
 
 
-def _md5(s: str):
+def _md5(s: str) -> str:
     return hashlib.md5(s.encode('utf-8')).hexdigest()
 
 
