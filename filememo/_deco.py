@@ -34,7 +34,8 @@ def _max_to_none(delta: dt.timedelta) -> Optional[dt.timedelta]:
         return delta
 
 
-def _outdated_exc(created: dt.datetime, max_age: Optional[dt.timedelta]):
+def _is_outdated_exception(created: dt.datetime,
+                           max_age: Optional[dt.timedelta]) -> bool:
     if max_age == dt.timedelta.max:
         return False
     if max_age is None:  # means zero
@@ -42,7 +43,7 @@ def _outdated_exc(created: dt.datetime, max_age: Optional[dt.timedelta]):
     return (_utc() - created) > max_age
 
 
-def _outdated_result(created: dt.datetime, max_age: dt.timedelta):
+def _is_outdated_result(created: dt.datetime, max_age: dt.timedelta) -> bool:
     assert max_age is not None
     if max_age == dt.timedelta.max:
         return False
@@ -83,12 +84,13 @@ def memoize(function: Callable = None,
             old_exception, old_result = record.data
 
             if old_exception is not None:
-                if not _outdated_exc(record.created, exceptions_max_age):
+                if not _is_outdated_exception(record.created,
+                                              exceptions_max_age):
                     raise FunctionException(old_exception)
             else:
                 assert old_exception is None
                 # we don't need to delete anything on reading
-                if not _outdated_result(record.created, max_age):
+                if not _is_outdated_result(record.created, max_age):
                     return old_result
 
             # we did not return result and did not raise exception.
