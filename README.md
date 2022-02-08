@@ -3,7 +3,7 @@
 File-based **memoization** decorator. Caches the results of expensive function
 calls. Retains the cached results between program restarts.
 
-CI tests are done in Python 3.8, 3.9 and 3.10-beta.1 on macOS, Ubuntu and
+CI tests are done in Python 3.8, 3.9 and 3.10 on macOS, Ubuntu and
 Windows.
 
 ---
