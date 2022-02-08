@@ -5,4 +5,3 @@ if __name__ == "__main__":
         pkg.run_python_code('from filememo import memoize')
 
     print("\nPackage is OK!")
-

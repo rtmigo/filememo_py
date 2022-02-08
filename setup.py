@@ -44,6 +44,7 @@ setup(
         # python 3.8 is required by pickledir
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Operating System :: POSIX",
         "Operating System :: Microsoft :: Windows",
     ],
