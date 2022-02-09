@@ -102,6 +102,10 @@ def memoize(function: Callable = None,
                 _on_call(*args, **kwargs)
             new_result = function(*args, **kwargs)
             new_exception = None
+        except KeyboardInterrupt:
+            raise
+        except SystemExit:
+            raise
         except BaseException as exc:
             new_exception = exc
             new_result = None
